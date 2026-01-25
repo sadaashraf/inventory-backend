@@ -5,12 +5,16 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
 import { ProductsModule } from './modules/products/products.module';
 import { CategoryModule } from './modules/category/category.module';
-import { databaseConfig } from './config/dbconfig.service';
+import { dbConfig } from './config/db';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync(databaseConfig),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: dbConfig,
+      inject: [ConfigService],
+    }),
     ProductsModule,
     CategoryModule,
   ],
