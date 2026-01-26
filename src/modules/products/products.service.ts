@@ -20,15 +20,14 @@ export class ProductsService {
   async create(createProductDto: CreateProductDto) {
     const { category_id } = createProductDto;
 
-    // let category;
+    let category;
+    if (category_id) {
+      category = await this.categoryRepe.findOneBy({ id: category_id });
+      if (!category) {
+        throw new NotFoundException('Category not found');
+      }
+    }
 
-    // if (categoryId) {
-    const category = await this.categoryRepe.findOneBy({ id: category_id });
-    //   if (!category) {
-    //     throw new NotFoundException('Category not found');
-    //   }
-    // }
-    console.log(category, "category id")
     const product = this.ProductRepo.create({
       ...createProductDto,
       category, // assign the entity, not just id
