@@ -38,18 +38,52 @@ export class ProductsService {
 
 
   findAll() {
-    return `This action returns all products`;
+    return this.ProductRepo.find({ relations: ['category'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: number) {
+    const product = await this.ProductRepo.findOne({
+      where: { id },
+      relations: ['category'],
+    });
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+    return product;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    const product = await this.ProductRepo.findOne({
+      where: { id },
+      relations: ['category'],
+    });
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    const { category_id, ...rest } = updateProductDto;
+
+    // update category if provided
+    if (category_id) {
+      const category = await this.categoryRepe.findOneBy({ id: category_id });
+      if (!category) {
+        throw new NotFoundException('Category not found');
+      }
+      product.category = category;
+    }
+
+    Object.assign(product, rest);
+
+    return this.ProductRepo.save(product);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  // --- DELETE ---
+  async remove(id: number) {
+    const product = await this.ProductRepo.findOne({ where: { id } });
+    if (!product) throw new NotFoundException('Product not found');
+
+    await this.ProductRepo.remove(product);
+    return { message: 'Product deleted successfully' };
   }
 }
