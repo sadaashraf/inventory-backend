@@ -1,26 +1,49 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Category } from './entities/category.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class CategoryService {
+
+  constructor(
+    @InjectRepository(Category)
+    private categoryRepe: Repository<Category>,
+  ) { }
   create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+    const { name, description } = createCategoryDto;
+    const category = this.categoryRepe.create({
+      name,
+      description,
+    });
+    return this.categoryRepe.save(category);
   }
 
   findAll() {
-    return `This action returns all category`;
+    return this.categoryRepe.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} category`;
+    const category = this.categoryRepe.findOneBy({ id });
+    if (!category) {
+      throw new Error(`ID ${id} not found`);
+    }
+    return category;
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    const category = await this.categoryRepe.findOneBy({ id });
+    if (!category) {
+      throw new Error(`ID ${id} not found`);
+    }
+    Object.assign(category, updateCategoryDto);
+    return this.categoryRepe.save(category);
+
   }
 
   remove(id: number) {
-    return `This action removes a #${id} category`;
+    return this.categoryRepe.delete(id);
   }
 }
