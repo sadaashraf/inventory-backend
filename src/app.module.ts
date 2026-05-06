@@ -5,12 +5,16 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { databaseConfig } from './config/database.config';
 import { SupplierModule } from './module/supplier/supplier.module';
+import { CategoryModule } from './module/category/category.module';
+import { PurchaseModule } from './module/purchase/purchase.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, }),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync(databaseConfig),
-    SupplierModule
+    SupplierModule,
+    CategoryModule,
+    PurchaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

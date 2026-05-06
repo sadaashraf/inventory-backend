@@ -12,22 +12,23 @@ export class CategoryService {
     private readonly categoryRepo: Repository<Category>,
   ) { }
   create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+    const category = this.categoryRepo.create(createCategoryDto);
+    return this.categoryRepo.save(category);
   }
 
   findAll() {
-    return `This action returns all category`;
+    return this.categoryRepo.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} category`;
+    return this.categoryRepo.findOneBy({ id });
   }
 
   update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+    return this.categoryRepo.update({ id }, updateCategoryDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} category`;
+    return this.categoryRepo.delete({ id });
   }
 }
