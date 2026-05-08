@@ -25,6 +25,6 @@ export class PurchaseItem {
   @Column('decimal')
   total!: number;
 
-  @ManyToOne(() => Purchase, (purchase) => purchase.items)
+  @ManyToOne(() => Purchase, (purchase) => purchase.items, { onDelete: 'CASCADE' })
   purchase!: Purchase;
 }

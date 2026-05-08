@@ -51,11 +51,11 @@ export class RequisitionService {
   }
 
   findAll() {
-    return this.requisitionRepo.find({ relations: ['items'] });
+    return this.requisitionRepo.find({ relations: ['items', 'department'] });
   }
 
   findOne(id: number) {
-    return this.requisitionRepo.findOne({ where: { id }, relations: ['items'] });
+    return this.requisitionRepo.findOne({ where: { id }, relations: ['items', 'department'] });
   }
 
   async update(id: number, dto: UpdateRequisitionDto) {

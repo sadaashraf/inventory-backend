@@ -4,12 +4,16 @@ import { Repository } from 'typeorm';
 import { Department } from './entities/department.entity';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
+import { Requisition } from '../requisition/entities/requisition.entity';
 
 @Injectable()
 export class DepartmentService {
   constructor(
     @InjectRepository(Department)
     private departmentRepo: Repository<Department>,
+
+    @InjectRepository(Requisition)
+    private requisitionRepo: Repository<Requisition>,
   ) {}
 
   create(dto: CreateDepartmentDto) {
@@ -32,7 +36,13 @@ export class DepartmentService {
     return this.departmentRepo.save(dept);
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    await this.requisitionRepo
+      .createQueryBuilder()
+      .update()
+      .set({ department: null as any })
+      .where('departmentId = :id', { id })
+      .execute();
     return this.departmentRepo.delete({ id });
   }
 }

@@ -25,8 +25,9 @@ export class SupplierService {
     return this.supplierRepo.findOneBy({ id });
   }
 
-  update(id: number, dto: UpdateSupplierDto) {
-    return this.supplierRepo.update({ id }, dto);
+  async update(id: number, dto: UpdateSupplierDto) {
+    await this.supplierRepo.update({ id }, dto);
+    return this.supplierRepo.findOneBy({ id });
   }
 
   remove(id: number) {

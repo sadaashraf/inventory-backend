@@ -7,7 +7,7 @@ export class Requisition {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => Department, { eager: true })
+  @ManyToOne(() => Department, { eager: true, onDelete: 'SET NULL', nullable: true })
   department!: Department;
 
   @Column()

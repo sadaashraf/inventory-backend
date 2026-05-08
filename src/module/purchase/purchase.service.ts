@@ -71,7 +71,8 @@ export class PurchaseService {
       items,
     });
 
-    return this.purchaseRepo.save(purchase);
+    const saved = await this.purchaseRepo.save(purchase);
+    return this.purchaseRepo.findOne({ where: { id: saved.id }, relations: ['items'] });
   }
 
   findAll() {
@@ -97,7 +98,8 @@ export class PurchaseService {
     return this.purchaseRepo.save(purchase);
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    await this.itemRepo.delete({ purchase: { id } });
     return this.purchaseRepo.delete({ id });
   }
 }
